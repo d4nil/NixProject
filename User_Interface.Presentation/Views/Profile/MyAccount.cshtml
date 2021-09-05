@@ -1,0 +1,36 @@
+﻿@model UserDataViewModel
+@{
+    ViewData["Title"] = "MyAccount";
+}
+
+<h1>Мой профиль</h1>
+<table>
+    class="table">
+    <tr><td>Имя</td><td>Город</td><td>Имейлы</td><td>Телефоны</td></tr>
+
+    <tr>
+        <td>@Model.Name</td>
+        <td>@Model.City.city</td>
+    </tr>
+</table>
+<table>
+    @foreach (Domain.Core.Email e in Model.Emails)
+
+    {
+        <tr>@e.email</tr>
+    }
+</table>
+<table>
+
+    @foreach (Domain.Core.Phone e in Model.Phones)
+    {
+        <tr>@e.phone</tr>
+    }
+</table>
+<div>
+    <a asp-action="Edit" asp-route-id=@ViewBag.Id>Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+

@@ -1,0 +1,117 @@
+﻿@model ProductsViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+<style>
+    @@font-face {
+        font-family: 'FontAwesome';
+        src: url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2') format('woff2'), url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff') format('woff'), url('https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/fonts/fontawesome-webfont.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal
+    }
+
+    .glyphicon {
+        display: inline-block;
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: inherit;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale
+    }
+
+    .glyphicon-chevron-right:before {
+        content: "\f054";
+    }
+
+    .glyphicon-chevron-left:before {
+        content: "\f053";
+    }
+</style>
+<h4>Продукты</h4>
+
+<form method="get">
+    <div class="form-inline form-group">
+        <label class="control-label">Имя:     </label>&nbsp;
+        <input name="name" class="form-control" />
+        <div>&nbsp;</div>
+        <label class="control-label">Компания:     </label>&nbsp;
+        <select name="company" asp-items="@ViewBag.Categories" ></select> &nbsp;
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+    </div>
+</form>
+
+
+<div class="row">
+    <div class="col">
+        Название
+    </div><div class="col">
+        Цена
+    </div><div class="col">
+        Категория
+    </div><div class="col">
+        Состояние
+    </div><div class="col">
+        Производитель
+    </div><div class="col">
+        Продавец
+    </div>
+</div>
+
+    @foreach (var p in Model.Products)
+    {
+        <div class="row">
+            <div class="col">
+                @p.PName
+            </div>
+            <div class="col">
+                @p.Cost
+            </div>
+            <div class="col">
+                @p.Category.Name
+            </div>
+            <div class="col">
+                @p.Subcategory.Name
+            </div>
+            <div class="col">
+                @p.Condition
+            </div>
+            <div class="col">
+                @p.Producer.Name
+            </div>
+            <div class="col">
+                @Model.Users.Where(x => x.UserId == p.ProductId).Select(x => x.UserData.Name).ToString()
+            </div>
+            <div class="col">
+                <form asp-action="AddToCart" asp-controller="ShoppingCart" asp-route-id="@p.ProductId" , asp-route-BuyId="@Model.BuyerId">
+                    <div>
+                        <input type="submit" class="btn btn-success" value="Добавить в корзину" />
+                    </div>
+                </form>
+            </div>
+            <div class="col">
+                <form asp-action="ShowProduct" asp-controller="Home" asp-route-id="@p.ProductId" , asp-route-BuyId="@Model.BuyerId">
+                    <div>
+                        <input type="submit" class="btn btn-success" value="Показать товар" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-action="Products"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+           class="btn btn-outline-dark">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+            Назад
+        </a>
+    }
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Products"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+           class="btn btn-outline-dark">
+            Вперед
+            <i class="glyphicon glyphicon-chevron-right"></i>
+        </a>
+    }

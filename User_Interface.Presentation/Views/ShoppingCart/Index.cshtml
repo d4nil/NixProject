@@ -1,0 +1,48 @@
+﻿@model ShoppingCartViewModel
+
+@{
+    ViewBag.Title = "Ваша корзина";
+}
+
+<h2>Ваша корзина</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Кол-во</th>
+            <th>Товар</th>
+            <th class="text-right">Цена</th>
+            <th class="text-right">Общая цена</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var line in Model.lines)
+        {
+            <tr>
+                <td class="text-center">@line.Quantity</td>
+                <td class="text-left">@line.Product.PName</td>
+                <td class="text-right">@line.Product.Cost.ToString("# грн")</td>
+                <td class="text-right">@line.TotalCostProducts.ToString("#  грн")</td>
+                <td class="text-right"><a asp-action="RemoveFromCart" asp-route-id="@line.Product.ProductId">Удалить</a></td>
+
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" class="text-right">Итого:</td>
+            <td class="text-right">
+                @Model.TotalCostAllProducts.ToString("# грн")
+            </td>
+        </tr>
+    </tfoot>
+    </table>
+    <div class="text-center">
+        <a class="btn btn-primary" asp-action="Products" asp-controller="Home">Продолжить покупки</a>
+    </div>
+    <div class="text-center">
+        <a class="btn btn-primary" asp-action="CreateOrder" asp-controller="Order">Оформление заказа</a>
+    </div>
+
+
+    }

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Domain.Core.Category>
+@{
+    ViewData["Title"] = "";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+    </div>
+    <h3>Категории</h3>
+    <table>
+        <tr>
+            <td>Категория</td>
+            <td>Родительская Категория</td>
+        </tr>
+        @foreach (var cat in Model)
+        {
+            <tr>
+                <td>@cat.Name</td>
+               @if(cat.ParentCategory != null) { 
+                <td>@cat.ParentCategory.Name</td>
+               }
+            </tr>
+        }
+    </table>
+</body>
+</html>

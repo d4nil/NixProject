@@ -1,0 +1,5 @@
+C:\Users\Kifardan\source\repos\NixProjectNull\Classes1\bin\Debug\net5.0\Interfaces.dll
+C:\Users\Kifardan\source\repos\NixProjectNull\Classes1\obj\Debug\net5.0\ClassLibrary.csprojAssemblyReference.cache
+C:\Users\Kifardan\source\repos\NixProjectNull\Classes1\obj\Debug\net5.0\ClassLibrary.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Kifardan\source\repos\NixProjectNull\Classes1\obj\Debug\net5.0\ClassLibrary.AssemblyInfoInputs.cache
+C:\Users\Kifardan\source\repos\NixProjectNull\Classes1\obj\Debug\net5.0\ClassLibrary.AssemblyInfo.cs

@@ -1,0 +1,48 @@
+﻿@using Domain.Core
+@model OrderViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Заказ</h1>
+
+<div>
+    <h4>Order</h4>
+    <hr />
+    <table class="table">
+        <tr>
+            <td>Имя</td>
+            <td>Коммент</td>
+            <td>Город</td>
+            <td>Адрес</td>
+            <td>Дата</td>
+            <td>Адрес</td>
+            <td>Общая стоимость</td>
+        </tr>
+        <tr>
+            <td>@Model.User.UserData.Name</td>
+            <td>@Model.Comment</td>
+            <td>@Model.User.UserData.City</td>
+            <td>@Model.City.city</td>
+            <td>@Model.Date</td>
+            <td>@Model.Address</td>
+            <td>@Model.cart.TotalCostAllProducts.ToString("# грн")</td>
+        </tr>
+        <tr>
+            <td>Название</td>
+            <td>Цена</td>
+        </tr>
+        @foreach (Cartline p in Model.cart.Lines)
+        {
+            <tr><td>@p.Product.PName</td>
+        <td>@p.TotalCostProducts.ToString("# грн")</td>
+        </tr>
+        }
+    </table>
+
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@ViewBag.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
