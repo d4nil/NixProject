@@ -14,6 +14,7 @@ namespace Domain.Core
         public string Name { get; set; }
         public List<Phone> Phones { get; set; }
         public List<Email> Emails { get; set; }
+        public Guid CityId { get; set; }
         public City City { get; set; }
 
         public UserData( string name, string p, string e, string c)

@@ -19,6 +19,7 @@ namespace Domain.Core
         public string Comment { get; set; }
         [Required(ErrorMessage = "Выберите город")]
         public City City { get; set; }
+        public Guid CityId { get; set; }
 
         [Required(ErrorMessage = "Адрес пуст")]
         public string Address { get; set; }

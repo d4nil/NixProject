@@ -37,7 +37,7 @@ namespace User_Interface.Presentation.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            ViewBag.Cities = new SelectList(UnitOfWork.Cities.GetAll(), "CityId", "city");
+            ViewBag.Cities = new SelectList(UnitOfWork.Cities.GetAll(), "CityId", "city") ;
             return View();
         }
 
@@ -45,22 +45,29 @@ namespace User_Interface.Presentation.Controllers
         public async Task<IActionResult> Create(UserDataViewModel udvm)
         {
             var user = _userManager.GetUserId(HttpContext.User);
-            if (UnitOfWork.Users.Get(user) == null) { 
-            User newuser = new User { IdentityId = user };
+            if (UnitOfWork.Users.Get(user) == null) {
+                User newuser = new User { IdentityId = user, UserProductsList = new UserProductsList { Products = new List<Product>() } };
             UnitOfWork.Users.Create(newuser);
             List<Phone> phones = new List<Phone> { new Phone { phone = udvm.Phone } };
             List<Email> emails = new List<Email> { new Email { email = udvm.Email } };
-            UserData usd = new UserData { City = udvm.City, Name = udvm.Name, Emails = emails, Phones = phones , UserId = newuser.UserId };
+            UserData usd = new UserData { City = UnitOfWork.Cities.Get(udvm.City.CityId), Name = udvm.Name, Emails = emails, Phones = phones , UserId = newuser.UserId };
             UnitOfWork.UserDataList.Create(usd);
             await UnitOfWork.Save();
             }
             else
             {
-                List<Phone> phones = new List<Phone> { new Phone { phone = udvm.Phone } };
-                List<Email> emails = new List<Email> { new Email { email = udvm.Email } };
-                UserData usd = new UserData { City = udvm.City, Name = udvm.Name, Emails = emails, Phones = phones, UserId = UnitOfWork.Users.Get(user).UserId };
-                UnitOfWork.UserDataList.Create(usd);
-                await UnitOfWork.Save();
+                if (UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId) == null) {
+                    List<Phone> phones = new List<Phone> { new Phone { phone = udvm.Phone } };
+                    List<Email> emails = new List<Email> { new Email { email = udvm.Email } };
+                    UserData usd = new UserData { City = udvm.City, Name = udvm.Name, Emails = emails, Phones = phones, UserId = UnitOfWork.Users.Get(user).UserId };
+                    UnitOfWork.UserDataList.Create(usd);
+                    await UnitOfWork.Save();
+                    return RedirectToAction("Products", "Home");
+                }
+                else
+                {
+                    return RedirectToAction("MyAccount");
+                }
             }
             return RedirectToAction("Products", "Home");
         }
@@ -70,8 +77,9 @@ namespace User_Interface.Presentation.Controllers
             var user =  _userManager.GetUserId(HttpContext.User);
             if (UnitOfWork.Users.Get(user) !=null)
             {
-                if(UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId) == null) { return RedirectToAction("Create"); }
-                UserDataViewModel udvm = new UserDataViewModel { Name = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).Name, City = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).City, Emails = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).Emails, Phones = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).Phones };
+                var usd = UnitOfWork.Users.Get(user);
+                var userData = UnitOfWork.UserDataList.GetByUser(usd.UserId);
+                UserDataViewModel udvm = new UserDataViewModel { Name = userData.Name, City = userData.City, Emails = UnitOfWork.Emails.GetAll().Where(x=>x.UserDataId == userData.UserDataId), Phones = UnitOfWork.Phones.GetAll().Where(x => x.UserDataId == userData.UserDataId) };
                 ViewBag.Id = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).UserDataId;
                 return View(udvm);
             }
@@ -95,7 +103,7 @@ namespace User_Interface.Presentation.Controllers
             da.Phones.Add(new Phone { phone = udvm.Phone });
             da.Emails.Add(new Email { email = udvm.Email });
             da.Name = udvm.Name;
-            da.City = udvm.City;
+            da.City = UnitOfWork.Cities.Get(udvm.City.CityId);
             UnitOfWork.UserDataList.Update(da);
             await UnitOfWork .Save();
             return RedirectToAction("MyAccount");

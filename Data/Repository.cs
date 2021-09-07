@@ -154,9 +154,8 @@ namespace Data
         }
         public UserData GetByUser(Guid? id)
         {
-            User user =  db.Users.Find(id);
-            UserData userData = db.UserDataList.Where(x => x.UserDataId == user.UserId).FirstOrDefault();
-            if (user == null) { return null; }
+            var userData = db.UserDataList.Where(x => x.UserId == db.Users.Find(id).UserId).FirstOrDefault();
+            if (db.Users.Find(id) == null) { return null; }
             else if (userData == null ) {
                 return null;
             }
@@ -391,6 +390,13 @@ namespace Data
             return db.UserProductsLists.Find(id);
         }
 
+        public UserProductsList GetByUser(Guid? id)
+        {
+            User user = db.Users.Where(x => x.UserId == id).FirstOrDefault() ;
+            UserProductsList userProductsList = db.UserProductsLists.Where(x => x.UserProductsListId == user.UserProductsList.UserProductsListId).FirstOrDefault();
+            return db.UserProductsLists.Find(userProductsList.UserProductsListId);
+        }
+
         public void Create(UserProductsList userProductsList)
         {
             db.UserProductsLists.Add(userProductsList);
@@ -428,8 +434,9 @@ namespace Data
         }
         public ShoppingCart GetByUser(Guid? id)
         {
-            User user = db.Users.Find(id);
-            ShoppingCart shop = db.ShoppingCarts.Where(x => x.BuyerId == user.UserId).FirstOrDefault();
+            ShoppingCart shop = db.ShoppingCarts.Where(x => x.BuyerId == db.Users.Find(id).UserId).FirstOrDefault();
+            if(shop == null) { return null; }
+            else 
             return db.ShoppingCarts.Find(shop.ShoppingCartId);
         }
 

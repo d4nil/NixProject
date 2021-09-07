@@ -13,10 +13,10 @@ namespace User_Interface.Presentation.Models
         public string Name { get; set; }
         [Required(ErrorMessage = "Необходимо ввести  телефон"), Phone]
         public string Phone { get; set; }
-        public List<Phone> Phones { get; set; }
+        public IEnumerable<Phone> Phones { get; set; }
         [Required(ErrorMessage = "Необходимо ввести  имейл"), EmailAddress]
         public string Email { get; set; }
-        public List<Email> Emails { get; set; }
+        public IEnumerable<Email> Emails { get; set; }
         [Required(ErrorMessage = "Выберите город")]
         public City City { get; set; }
 

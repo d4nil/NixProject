@@ -33,25 +33,34 @@ namespace User_Interface.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProduct(Product prod)
         {
-            User User = UnitOfWork.Users.Get(prod.UserId);
-            User.AddProduct(prod);
+            if(UnitOfWork.Users.Get(prod.UserId).UserProductsList == null)
+            {
+                UserProductsList upl = new UserProductsList { Products = new List<Product>() };
+                UnitOfWork.Users.Get(prod.UserId).UserProductsList = upl;
+                UnitOfWork.Users.Update(UnitOfWork.Users.Get(prod.UserId));
+                
+
+            }
+            prod.Category = UnitOfWork.Categories.Get(prod.Category.CategoryId);
+            prod.Subcategory = UnitOfWork.Categories.Get(prod.Subcategory.CategoryId);
+            prod.Producer = UnitOfWork.Producers.Get(prod.Producer.ProducerId);
+            UnitOfWork.Users.Get(prod.UserId).AddProduct(prod);
             UnitOfWork.Products.Create(prod);
-            UnitOfWork.Users.Update(User);
+            UnitOfWork.Users.Update(UnitOfWork.Users.Get(prod.UserId));
             await UnitOfWork.Save();
             return View("ProductList");
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateProduct()
+        public IActionResult CreateProduct()
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            if (UnitOfWork.Users.Get(user.Id) != null)
+            var user = _userManager.GetUserId(HttpContext.User);
+            if (UnitOfWork.Users.Get(user) != null)
             {
-                User olduser = UnitOfWork.Users.Get(user.Id);
-                ViewBag.Categories = new SelectList(UnitOfWork.Categories.GetAll().Where(x=>x.ParentCategory == null), "CategoryId", "Name");
-                ViewBag.SubCategories = new SelectList(UnitOfWork.Categories.GetAll().Where(x => x.ParentCategory != null), "CategoryId", "Name");
+                ViewBag.Categories = new SelectList(UnitOfWork.Categories.GetAll().ToList().Where(x=>x.ParentCategory == null), "CategoryId", "Name");
+                ViewBag.SubCategories = new SelectList(UnitOfWork.Categories.GetAll().ToList().Where(x => x.ParentCategory != null), "CategoryId", "Name");
                 ViewBag.Producers = new SelectList(UnitOfWork.Producers.GetAll(), "ProducerId", "Name");
-                ViewBag.Id = olduser.UserId;
+                ViewBag.Id = UnitOfWork.Users.Get(user).UserId;
                 return View();
             }
             return RedirectToAction("Register", "Account");
@@ -63,12 +72,12 @@ namespace User_Interface.Presentation.Controllers
             return View();
         }
 
-        public async Task<IActionResult> ProductList()
+        public IActionResult ProductList()
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            User User = UnitOfWork.Users.Get(user.Id);
-            IEnumerable<Product> products =  UnitOfWork.Products.GetAll().Where(x=>x.UserId == User.UserId);
-            ProductsViewModel pvm = new ProductsViewModel { Products = products, UserId = User.UserId };
+            var user =  _userManager.GetUserId(HttpContext.User);
+            var usd = UnitOfWork.Users.Get(user);
+            var userpro = UnitOfWork.UserProductsLists.Get(usd.UserProductListId);
+            ProductsViewModel pvm = new ProductsViewModel { Products = UnitOfWork.Products.GetAll().Where(x=>x.UserId == usd.UserId), UserId = UnitOfWork.Users.Get(user).UserId };
             return View(pvm);
         }
 

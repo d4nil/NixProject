@@ -4,33 +4,41 @@
 }
 
 <h1>Мой профиль</h1>
-<table>
-    class="table">
-    <tr><td>Имя</td><td>Город</td><td>Имейлы</td><td>Телефоны</td></tr>
-
-    <tr>
-        <td>@Model.Name</td>
-        <td>@Model.City.city</td>
-    </tr>
-</table>
-<table>
-    @foreach (Domain.Core.Email e in Model.Emails)
-
-    {
-        <tr>@e.email</tr>
-    }
-</table>
-<table>
-
-    @foreach (Domain.Core.Phone e in Model.Phones)
-    {
-        <tr>@e.phone</tr>
-    }
-</table>
-<div>
-    <a asp-action="Edit" asp-route-id=@ViewBag.Id>Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="row">
+    <div class="col">
+        Имя
+    </div><div class="col">
+        Город
+    </div><div class="col">
+        Имейлы
+    </div><div class="col">
+        Телефоны
+    </div>
 </div>
+
+<div class="row">
+    <div class="col">
+        @Model.Name
+    </div>
+    <div class="col">
+        @Model.City
+    </div>
+    <div class="col">
+        @foreach (Domain.Core.Email e in Model.Emails)
+        {
+            <div class="row">@e.email</div>
+        }
+    </div>
+    <div class="col">
+        @foreach (Domain.Core.Phone e in Model.Phones)
+        {
+            <div class="row">@e.phone</div>
+        }
+    </div>
+</div>
+        <div>
+            <a class="btn-link" asp-action="Edit" asp-route-id=@ViewBag.Id>Изменить</a> 
+        </div>
 
 
 

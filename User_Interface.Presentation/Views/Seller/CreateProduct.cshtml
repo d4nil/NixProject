@@ -29,19 +29,19 @@
     </div>
     <div class="form-group">
         <label asp-for="Category">Категория</label>
-        <select asp-items="ViewBag.Categories"></select>
+        <select asp-for="Category.CategoryId" asp-items="@ViewBag.Categories"></select>
         <span asp-validation-for="Category" class="text-danger"></span>
         <p></p>
         <label asp-for="Subcategory">Подкатегория</label>
-        <select asp-for="Subcategory" asp-items="ViewBag.SubCategories"></select>
+        <select  asp-for="Subcategory.CategoryId" asp-items="@ViewBag.SubCategories"></select>
         <span asp-validation-for="Subcategory" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="Producer">Производитель</label>
-        <select asp-for="Producer" asp-items="ViewBag.Producers"></select>
+        <select asp-for="Producer.ProducerId" asp-items="@ViewBag.Producers"></select>
     </div>
     <div>
-        <input type="hidden" asp-for="UserId" value="ViewBag.Id" />
+        <input type="hidden" asp-for="UserId" value="@ViewBag.Id" />
     </div>
     <div class="form-group">
         <input type="submit" value="Добавить" class="btn btn-default" />

@@ -14,7 +14,7 @@
 
         @foreach (Product p in Model.Products)
         {
-    <tr><td>@p.PName</td><td>@p.ProductDescription</td><td>@p.Cost</td><td>@p.Category.Name</td><td>@p.Condition</td><td>@p.Producer.Name</td><td><a asp-action="EditProduct" asp-route-id="@Model.UserId">Edit</a></td><td><a asp-action="DeleteProduct" asp-route-id="@Model.UserId">Delete</a></td></tr>
+    <tr><td>@p.PName</td><td>@p.ProductDescription</td><td>@p.Cost</td><td>@p.Category.Name</td><td>@p.Subcategory.Name</td><td>@p.Condition</td><td>@p.Producer.Name</td><td><a asp-action="EditProduct" asp-route-id="@Model.UserId">Edit</a></td><td><a asp-action="DeleteProduct" asp-route-id="@Model.UserId">Delete</a></td></tr>
         }
     </table>
 </div>

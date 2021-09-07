@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Domain.Core.Category>
+﻿@model Domain.Core.UserData
 @{
     ViewData["Title"] = "";
 }
@@ -19,15 +19,13 @@
             <td>Категория</td>
             <td>Родительская Категория</td>
         </tr>
-        @foreach (var cat in Model)
-        {
-            <tr>
-                <td>@cat.Name</td>
-               @if(cat.ParentCategory != null) { 
-                <td>@cat.ParentCategory.Name</td>
-               }
-            </tr>
-        }
+        <tr>
+            <td>@Model.City</td>
+            <td>@Model.Emails</td>
+            <td>@Model.Name</td>
+            <td>@Model.Phones</td>
+        </tr>
+
     </table>
 </body>
 </html>

@@ -87,7 +87,10 @@ namespace User_Interface.Presentation.Controllers
 
         public IActionResult Index()
         {
-            return View(UnitOfWork.Categories.GetAll());
+            var user = _userManager.GetUserId(HttpContext.User);
+            
+                UserDataViewModel udvm = new UserDataViewModel { Name = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).Name, City = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).City, Emails = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).Emails, Phones = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).Phones };
+                return View(UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId));
         }
 
         public IActionResult Privacy()
