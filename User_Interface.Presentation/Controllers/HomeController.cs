@@ -36,18 +36,18 @@ namespace User_Interface.Presentation.Controllers
             IEnumerable<Product> products = UnitOfWork.Products.GetAll();
             ProductsViewModel productsView = new ProductsViewModel();
             var user =  _userManager.GetUserId(HttpContext.User);
-            if(UnitOfWork.Users.Get(user) != null)
+            if(UnitOfWork.Users.Get(user) == null)
             {
-                User olduser = UnitOfWork.Users.Get(user);
-                productsView.BuyerId = olduser.UserId;
-            }
-            else 
-            { 
-                
                 User newuser = new User { IdentityId = user };
                 productsView.BuyerId = newuser.UserId;
                 UnitOfWork.Users.Create(newuser);
                 await UnitOfWork.Save();
+                
+            }
+            else 
+            {
+                productsView.BuyerId = UnitOfWork.Users.Get(user).UserId;
+
             }
 
             if (category != null)
@@ -63,13 +63,12 @@ namespace User_Interface.Presentation.Controllers
             categories.Insert(0, new Category { Name = "Все"});
             ViewBag.Categories = new SelectList(categories, "CategoryId", "Name");
             int pageSize = 8;
-            IEnumerable<User> Users = UnitOfWork.Users.GetAll();
             var count =  products.Count();
             var items =  products.Skip((page - 1) * pageSize).Take(pageSize);
             PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
             productsView.PageViewModel = pageViewModel;
             productsView.Products = products;
-            productsView.Users = Users;
+            productsView.Users = UnitOfWork.Users.GetAll();
             return View(productsView);
         }
 

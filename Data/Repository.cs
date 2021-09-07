@@ -155,12 +155,16 @@ namespace Data
         public UserData GetByUser(Guid? id)
         {
             User user =  db.Users.Find(id);
-            if (user == null) { return null; }
-            else { 
             UserData userData = db.UserDataList.Where(x => x.UserDataId == user.UserId).FirstOrDefault();
+            if (user == null) { return null; }
+            else if (userData == null ) {
+                return null;
+            }
+            else { 
             return db.UserDataList.Find(userData.UserDataId);
             }
         }
+        
 
         public void Create(UserData userdata)
         {

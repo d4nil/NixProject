@@ -45,14 +45,23 @@ namespace User_Interface.Presentation.Controllers
         public async Task<IActionResult> Create(UserDataViewModel udvm)
         {
             var user = _userManager.GetUserId(HttpContext.User);
+            if (UnitOfWork.Users.Get(user) == null) { 
             User newuser = new User { IdentityId = user };
             UnitOfWork.Users.Create(newuser);
             List<Phone> phones = new List<Phone> { new Phone { phone = udvm.Phone } };
             List<Email> emails = new List<Email> { new Email { email = udvm.Email } };
-            City city = new City { city = udvm.City.city };
-            UserData usd = new UserData { City = city, Name = udvm.Name, Emails = emails, Phones = phones , UserId = newuser.UserId };
+            UserData usd = new UserData { City = udvm.City, Name = udvm.Name, Emails = emails, Phones = phones , UserId = newuser.UserId };
             UnitOfWork.UserDataList.Create(usd);
             await UnitOfWork.Save();
+            }
+            else
+            {
+                List<Phone> phones = new List<Phone> { new Phone { phone = udvm.Phone } };
+                List<Email> emails = new List<Email> { new Email { email = udvm.Email } };
+                UserData usd = new UserData { City = udvm.City, Name = udvm.Name, Emails = emails, Phones = phones, UserId = UnitOfWork.Users.Get(user).UserId };
+                UnitOfWork.UserDataList.Create(usd);
+                await UnitOfWork.Save();
+            }
             return RedirectToAction("Products", "Home");
         }
 
@@ -61,11 +70,9 @@ namespace User_Interface.Presentation.Controllers
             var user =  _userManager.GetUserId(HttpContext.User);
             if (UnitOfWork.Users.Get(user) !=null)
             {
-                User olduser = UnitOfWork.Users.Get(user);
-                if(UnitOfWork.UserDataList.GetByUser(olduser.UserId) == null) { return RedirectToAction("Create"); }
-                UserData data = UnitOfWork.UserDataList.GetByUser(olduser.UserId);
-                UserDataViewModel udvm = new UserDataViewModel { Name = data.Name, City = data.City, Emails = data.Emails, Phones = data.Phones };
-                ViewBag.Id = data.UserDataId;
+                if(UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId) == null) { return RedirectToAction("Create"); }
+                UserDataViewModel udvm = new UserDataViewModel { Name = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).Name, City = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).City, Emails = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).Emails, Phones = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).Phones };
+                ViewBag.Id = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).UserDataId;
                 return View(udvm);
             }
             else
