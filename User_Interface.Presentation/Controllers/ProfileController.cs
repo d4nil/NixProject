@@ -62,6 +62,7 @@ namespace User_Interface.Presentation.Controllers
             if (UnitOfWork.Users.Get(user) !=null)
             {
                 User olduser = UnitOfWork.Users.Get(user);
+                if(UnitOfWork.UserDataList.GetByUser(olduser.UserId) == null) { return RedirectToAction("Create"); }
                 UserData data = UnitOfWork.UserDataList.GetByUser(olduser.UserId);
                 UserDataViewModel udvm = new UserDataViewModel { Name = data.Name, City = data.City, Emails = data.Emails, Phones = data.Phones };
                 ViewBag.Id = data.UserDataId;
