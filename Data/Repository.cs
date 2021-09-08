@@ -33,13 +33,15 @@ namespace Data
 
         public Product Get(Guid? id)
         {
-            return db.Products.Find(id);
+            var products = db.Products.Include(x => x.Category).Include(x => x.Producer).Include(x => x.Subcategory);
+            return products.Where(x => x.ProductId == id).FirstOrDefault();
         }
         public Product GetByUser(Guid? id)
         {
             User user = db.Users.Find(id);
             Product prod = db.Products.Where(x => x.UserId == user.UserId).FirstOrDefault();
-            return db.Products.Find(prod.ProductId);
+            var products = db.Products.Include(x => x.Category).Include(x => x.Producer).Include(x => x.Subcategory);
+            return products.Where(x=>x.ProductId == prod.ProductId).FirstOrDefault();
         }
 
         public void Create(Product product)
@@ -159,8 +161,9 @@ namespace Data
             else if (userData == null ) {
                 return null;
             }
-            else { 
-            return db.UserDataList.Find(userData.UserDataId);
+            else {
+                var userdatas = db.UserDataList.Include(x => x.City).Include(x => x.Emails).Include(x => x.Phones);
+            return userdatas.Where(x=>x.UserDataId == userData.UserDataId).FirstOrDefault();
             }
         }
         
@@ -198,15 +201,18 @@ namespace Data
 
         public User Get(Guid? id)
         {
-            return db.Users.Find(id);
+            var users = db.Users.Include(x => x.UserData).ThenInclude(x=>x.City).Include(x=>x.UserData).ThenInclude(x=>x.Emails).Include(x=>x.UserData).ThenInclude(x=>x.Phones).Include(x => x.UserProductsList);
+            return users.Where(x=>x.UserId == id).FirstOrDefault();
         }
         public User Get(string id)
         {
 
             User user =  db.Users.Where(x => x.IdentityId == id).FirstOrDefault();
             if (user == null) return null;
-            else { 
-            return db.Users.Find(user.UserId);
+            else {
+
+                var users = db.Users.Include(x => x.UserData).ThenInclude(x => x.City).Include(x => x.UserData).ThenInclude(x => x.Emails).Include(x => x.UserData).ThenInclude(x => x.Phones).Include(x => x.UserProductsList);
+                return users.Where(x => x.UserId == user.UserId).FirstOrDefault();
             }
         }
 

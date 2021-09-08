@@ -39,16 +39,13 @@ namespace User_Interface.Presentation.Controllers
             if(UnitOfWork.Users.Get(user) == null)
             {
                 User newuser = new User { IdentityId = user };
-                productsView.BuyerId = newuser.UserId;
                 UnitOfWork.Users.Create(newuser);
                 await UnitOfWork.Save();
                 
             }
-            else 
-            {
-                productsView.BuyerId = UnitOfWork.Users.Get(user).UserId;
-
-            }
+            
+            IEnumerable<Producer> producers = UnitOfWork.Producers.GetAll().ToList();
+            List<Category> categories = UnitOfWork.Categories.GetAll().ToList();
 
             if (category != null)
             {
@@ -58,8 +55,7 @@ namespace User_Interface.Presentation.Controllers
             {
                 products = products.Where(p => p.PName.Contains(name));
             }
-
-            List<Category> categories = UnitOfWork.Categories.GetAll().ToList();
+            
             categories.Insert(0, new Category { Name = "Все"});
             ViewBag.Categories = new SelectList(categories, "CategoryId", "Name");
             int pageSize = 8;
@@ -73,13 +69,26 @@ namespace User_Interface.Presentation.Controllers
         }
 
         [Authorize(Roles = "user")]
-        public IActionResult ShowProduct(Guid id, Guid buyerid)
+        public IActionResult ShowProduct(Guid pid, Guid buyerid)
         {
-            
-                Product prod = UnitOfWork.Products.Get(id);
-                ViewBag.ProdId = prod.ProductId;
-                User sell = UnitOfWork.Users.Get(buyerid);
-                ProductViewModel pvm = new ProductViewModel {PName = prod.PName, Category = prod.Category, Condition = prod.Condition, Cost = prod.Cost, Producer = prod.Producer, ProductDescription = prod.ProductDescription,Username = sell.UserData.Name, SubCategory = prod.Subcategory, BuyerId = buyerid};
+            var user = _userManager.GetUserId(HttpContext.User);
+            UnitOfWork.Categories.GetAll().ToList();
+            UnitOfWork.Producers.GetAll().ToList();
+            UnitOfWork.Phones.GetAll().ToList();
+            UnitOfWork.UserDataList.GetAll().ToList();
+            Product prod = UnitOfWork.Products.Get(pid);
+            ViewBag.ProdId = prod.ProductId;
+            var sell = UnitOfWork.Users.Get(prod.UserId);
+            var us = UnitOfWork.UserDataList.Get(sell.UserDataId);
+            ProductViewModel pvm = new ProductViewModel();
+            pvm.BuyerId = UnitOfWork.Users.Get(user).UserId;
+            pvm.Category = prod.Category;
+            pvm.Condition = prod.Condition;
+            pvm.Cost = prod.Cost;
+            pvm.PName = prod.PName;
+            pvm.SubCategory = prod.Subcategory;
+            pvm.Producer = prod.Producer;
+            pvm.userdata.Name = us.Name;
                 return View(pvm);
             
 

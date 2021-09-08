@@ -48,7 +48,7 @@ namespace User_Interface.Presentation.Controllers
             UnitOfWork.Products.Create(prod);
             UnitOfWork.Users.Update(UnitOfWork.Users.Get(prod.UserId));
             await UnitOfWork.Save();
-            return View("ProductList");
+            return RedirectToAction("ProductList");
         }
 
         [HttpGet]
@@ -74,6 +74,9 @@ namespace User_Interface.Presentation.Controllers
 
         public IActionResult ProductList()
         {
+            UnitOfWork.Categories.GetAll().ToList();
+            UnitOfWork.Producers.GetAll().ToList();
+            UnitOfWork.Products.GetAll().ToList();
             var user =  _userManager.GetUserId(HttpContext.User);
             var usd = UnitOfWork.Users.Get(user);
             var userpro = UnitOfWork.UserProductsLists.Get(usd.UserProductListId);

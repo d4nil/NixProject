@@ -77,9 +77,10 @@ namespace User_Interface.Presentation.Controllers
             var user =  _userManager.GetUserId(HttpContext.User);
             if (UnitOfWork.Users.Get(user) !=null)
             {
+                UnitOfWork.Cities.GetAll().ToList();
                 var usd = UnitOfWork.Users.Get(user);
                 var userData = UnitOfWork.UserDataList.GetByUser(usd.UserId);
-                UserDataViewModel udvm = new UserDataViewModel { Name = userData.Name, City = userData.City, Emails = UnitOfWork.Emails.GetAll().Where(x=>x.UserDataId == userData.UserDataId), Phones = UnitOfWork.Phones.GetAll().Where(x => x.UserDataId == userData.UserDataId) };
+                UserDataViewModel udvm = new UserDataViewModel { Name = userData.Name, City = UnitOfWork.Cities.Get(userData.CityId), Emails = UnitOfWork.Emails.GetAll().Where(x=>x.UserDataId == userData.UserDataId), Phones = UnitOfWork.Phones.GetAll().Where(x => x.UserDataId == userData.UserDataId) };
                 ViewBag.Id = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).UserDataId;
                 return View(udvm);
             }

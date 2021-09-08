@@ -16,9 +16,10 @@ namespace Domain.Core
         public Cartline AddItem(Product product)
         {
             Cartline line = Cartlines.Where(x => x.Product.ProductId == product.ProductId).FirstOrDefault();
-            if (line == null)
+            if ( line == null)
             {
-                return line = new Cartline { Product = product, Quantity = 1, TotalCostProducts = product.Cost };
+                line = new Cartline { Product = product, Quantity = 1, TotalCostProducts = product.Cost };
+                return line;
             }
             else
                 line.TotalCostProducts += product.Cost;

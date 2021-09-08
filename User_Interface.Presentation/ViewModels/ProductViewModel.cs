@@ -26,7 +26,7 @@ namespace User_Interface.Presentation.Models
         public Category SubCategory { get; set; }
 
         public Producer Producer { get; set; }
-        public string Username { get; set; }
+        public UserData userdata { get; set; }
         public IEnumerable<Category> categories { get; set; }
         public IEnumerable<Producer> producers { get; set; }
         public Guid BuyerId { get; set; }

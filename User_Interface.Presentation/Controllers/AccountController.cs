@@ -25,6 +25,8 @@ namespace User_Interface.Presentation.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            if (_userManager.GetUserId(HttpContext.User) != null)
+                return RedirectToAction("Products", "Home");
             return View();
         }
         [HttpPost]
@@ -56,6 +58,7 @@ namespace User_Interface.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
+
             if (ModelState.IsValid)
             {
                 var result =
@@ -82,6 +85,9 @@ namespace User_Interface.Presentation.Controllers
         [HttpGet]
         public IActionResult Login(string returnUrl = null)
         {
+            if (_userManager.GetUserId(HttpContext.User) != null)
+                return RedirectToAction("Products", "Home");
+            else
             return View(new LoginViewModel { ReturnUrl = returnUrl });
         }
 

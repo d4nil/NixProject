@@ -44,15 +44,15 @@ namespace User_Interface.Presentation.Controllers
         }
 
         [Authorize]
-        public IActionResult AddToCart(Guid? id, Guid BuyId)
+        public async Task<IActionResult> AddToCart(Guid? pid, Guid BuyId)
         {
-            Product product = UnitOfWork.Products.Get(id);
+            Product product = UnitOfWork.Products.Get(pid);
             if(UnitOfWork.ShoppingCarts.GetByUser(BuyId) != null) { 
             ShoppingCart cart = UnitOfWork.ShoppingCarts.GetByUser(BuyId);
             cart.AddItem(product);
             cart.ComputeTotalCostAllProducts();
                 UnitOfWork.ShoppingCarts.Update(cart);
-                UnitOfWork.Save();
+                await UnitOfWork.Save();
             }
             else 
             {
@@ -60,7 +60,7 @@ namespace User_Interface.Presentation.Controllers
                 cart.AddItem(product);
                 cart.ComputeTotalCostAllProducts();
                 UnitOfWork.ShoppingCarts.Create(cart);
-                UnitOfWork.Save();
+                await UnitOfWork.Save();
             }
             return RedirectToAction("Products", "Home");
         }

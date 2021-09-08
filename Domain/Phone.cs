@@ -11,7 +11,6 @@ namespace Domain.Core
     public class Phone
     {
         public Guid UserDataId { get; set; }
-
         public Guid PhoneId { get; set; }
         public string phone { get; set; }
         
