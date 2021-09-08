@@ -7,21 +7,32 @@
 <h1>Заказы</h1>
 <div class="row">
     <div class="col">
-        Название
+        Имя
+    </div>
+    <div class="col">
+        Город
+    </div><div class="col">
+        Дата
+    </div><div class="col">
+        Адрес
+    </div><div class="col">
+        Комментарий
     </div><div class="col">
         Цена
-    </div><div class="col">
-        Категория
-    </div><div class="col">
-        Состояние
-    </div><div class="col">
-        Производитель
-    </div><div class="col">
-        Продавец
+    </div>
+    <div class="col">
+        Название товара
+    </div>
+    <div class="col">
+        Количество товара
+    </div>
+    <div class="col">
+    </div>
+    <div class="col">
     </div>
 </div>
 
-@foreach (Order o in Model)
+@foreach (var o in Model)
 {
 <div class="row">
     <div class="col">
@@ -43,29 +54,34 @@
         @o.SumCost
     </div>
     <div class="col">
-        @foreach (Cartline c in o.lines)
+        @foreach (var c in o.lines)
         {
-            <div class="col">
-                @c.Product
-            </div>
-            <div class="col">
-                @c.Quantity
+            <div>
+                @c.Product.PName
             </div>
         }
     </div>
     <div class="col">
-        <form asp-action="Index" asp-controller="Order" asp-route-id="@o.OrderId">
+        @foreach (var c in o.lines)
+        {
             <div>
-                <input type="submit" class="btn btn-success" value="Просмотр заказа" />
+                @c.Quantity
             </div>
-        </form>
+        }
     </div>
-    <div class="col">
-        <form asp-action="Edit" asp-controller="Order" asp-route-id="@o.OrderId">
-            <div>
-                <input type="submit" class="btn btn-success" value="Изменить" />
-            </div>
-        </form>
+        <div class="col">
+            <form asp-action="Index" asp-controller="Order" asp-route-id="@o.OrderId">
+                <div>
+                    <input type="submit" class="btn btn-success" value="Просмотр заказа" />
+                </div>
+            </form>
+        </div>
+        <div class="col">
+            <form asp-action="Edit" asp-controller="Order" asp-route-id="@o.OrderId">
+                <div>
+                    <input type="submit" class="btn btn-success" value="Изменить" />
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 }

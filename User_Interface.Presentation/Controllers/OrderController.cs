@@ -65,8 +65,8 @@ namespace User_Interface.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder(OrderViewModel ovm)
         {
-            Order order = new Order { Name = ovm.Name, City = ovm.City, Address = ovm.Address, Comment = ovm.Comment, Date = ovm.Date, lines = (List<Cartline>)ovm.cart.Lines, UserId = ovm.User.UserId };
-            UnitOfWork.ShoppingCarts.Delete(ovm.cart.ShoppingCartId);
+
+            Order order = new Order { Name = ovm.Name, City = UnitOfWork.Cities.GetAll().Where(x=>x.city == ovm.City.city).FirstOrDefault(), Address = ovm.Address, Comment = ovm.Comment, Date = ovm.Date, lines = UnitOfWork.ShoppingCarts.GetAll().Where(x=>x.ShoppingCartId == ovm.cart.ShoppingCartId).FirstOrDefault().Cartlines, UserId = ovm.User.UserId, SumCost = UnitOfWork.ShoppingCarts.GetAll().Where(x => x.ShoppingCartId == ovm.cart.ShoppingCartId).FirstOrDefault().TotalCostAllProducts };
             var user = UnitOfWork.Users.GetAll().Where(x => x.Cart.ShoppingCartId == ovm.cart.ShoppingCartId).FirstOrDefault();
             user.Cart = new ShoppingCart { Cartlines = new List<Cartline>() };
             UnitOfWork.Users.Update(user);

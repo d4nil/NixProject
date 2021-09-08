@@ -244,12 +244,13 @@ namespace Data
 
         public IEnumerable<Order> GetAll()
         {
-            return db.Orders;
+            return db.Orders.Include(x => x.lines).ThenInclude(x => x.Product).Include(x => x.City);
         }
 
         public Order Get(Guid? id)
         {
-            return db.Orders.Find(id);
+            var orders = db.Orders.Include(x => x.lines).ThenInclude(x => x.Product).Include(x => x.City);
+            return orders.Where(x=>x.OrderId == id).FirstOrDefault();
         }
 
         public void Create(Order order)
