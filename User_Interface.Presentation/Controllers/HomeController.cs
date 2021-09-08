@@ -31,20 +31,19 @@ namespace User_Interface.Presentation.Controllers
         }
         
         [Authorize]
-        public async Task<IActionResult> Products(Guid? id, Guid? category, string name, int page = 1)
+        public async Task<IActionResult> Products(Guid? category, string name, int page = 1)
         {
             IEnumerable<Product> products = UnitOfWork.Products.GetAll();
             ProductsViewModel productsView = new ProductsViewModel();
             var user =  _userManager.GetUserId(HttpContext.User);
             if(UnitOfWork.Users.Get(user) == null)
             {
-                User newuser = new User { IdentityId = user };
+                User newuser = new User { IdentityId = user, UserProductsList = new UserProductsList { Products = new List<Product>() }, Cart = new ShoppingCart { Cartlines = new List<Cartline>() } };
                 UnitOfWork.Users.Create(newuser);
                 await UnitOfWork.Save();
                 
             }
             
-            IEnumerable<Producer> producers = UnitOfWork.Producers.GetAll().ToList();
             List<Category> categories = UnitOfWork.Categories.GetAll().ToList();
 
             if (category != null)
@@ -72,23 +71,20 @@ namespace User_Interface.Presentation.Controllers
         public IActionResult ShowProduct(Guid pid, Guid buyerid)
         {
             var user = _userManager.GetUserId(HttpContext.User);
-            UnitOfWork.Categories.GetAll().ToList();
-            UnitOfWork.Producers.GetAll().ToList();
-            UnitOfWork.Phones.GetAll().ToList();
-            UnitOfWork.UserDataList.GetAll().ToList();
             Product prod = UnitOfWork.Products.Get(pid);
             ViewBag.ProdId = prod.ProductId;
             var sell = UnitOfWork.Users.Get(prod.UserId);
-            var us = UnitOfWork.UserDataList.Get(sell.UserDataId);
+            var us = UnitOfWork.UserDataList.GetByUser(sell.UserId);
             ProductViewModel pvm = new ProductViewModel();
-            pvm.BuyerId = UnitOfWork.Users.Get(user).UserId;
+            pvm.BuyerId = buyerid;
             pvm.Category = prod.Category;
             pvm.Condition = prod.Condition;
             pvm.Cost = prod.Cost;
             pvm.PName = prod.PName;
             pvm.SubCategory = prod.Subcategory;
             pvm.Producer = prod.Producer;
-            pvm.userdata.Name = us.Name;
+            pvm.userdata = us;
+            pvm.userdata.Phones = us.Phones;
                 return View(pvm);
             
 

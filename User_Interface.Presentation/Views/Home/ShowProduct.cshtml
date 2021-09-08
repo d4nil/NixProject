@@ -45,27 +45,27 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Condition)
         </dd>
-        <dt class="col-sm-10">
+        <dt class="col-sm-2">
             Производитель
         </dt>
-        <dd class="col-sm-2">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Producer.Name)
         </dd>
-        <dt class="col-sm-10">
+        <dt class="col-sm-2">
             Продавец
         </dt>
-        <dd class="col-sm-2">
+        <dd class="col-sm-10">
             @Model.userdata.Name
         </dd>
-        @*<dt class="col-sm-10">
+        <dt class="col-sm-2">
             Номер телефона
         </dt>
-        <dd class="col-sm-2">
+        <dd class="col-sm-10">
             @foreach(var p in Model.userdata.Phones)
             {
-                p.phone.ToString();
+                @p.phone.ToString();
             }
-        </dd>*@
+        </dd>
     </dl>
 </div>
 <div>

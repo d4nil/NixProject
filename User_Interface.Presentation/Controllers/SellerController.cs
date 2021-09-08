@@ -33,7 +33,7 @@ namespace User_Interface.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProduct(Product prod)
         {
-            if(UnitOfWork.Users.Get(prod.UserId).UserProductsList == null)
+            if(UnitOfWork.Users.Get(prod.UserId).UserProductsList.Products == null)
             {
                 UserProductsList upl = new UserProductsList { Products = new List<Product>() };
                 UnitOfWork.Users.Get(prod.UserId).UserProductsList = upl;
@@ -74,12 +74,10 @@ namespace User_Interface.Presentation.Controllers
 
         public IActionResult ProductList()
         {
-            UnitOfWork.Categories.GetAll().ToList();
-            UnitOfWork.Producers.GetAll().ToList();
-            UnitOfWork.Products.GetAll().ToList();
+
             var user =  _userManager.GetUserId(HttpContext.User);
             var usd = UnitOfWork.Users.Get(user);
-            var userpro = UnitOfWork.UserProductsLists.Get(usd.UserProductListId);
+            var userpro = usd.UserData;
             ProductsViewModel pvm = new ProductsViewModel { Products = UnitOfWork.Products.GetAll().Where(x=>x.UserId == usd.UserId), UserId = UnitOfWork.Users.Get(user).UserId };
             return View(pvm);
         }
@@ -88,7 +86,7 @@ namespace User_Interface.Presentation.Controllers
         public IActionResult EditProduct(Guid? id)
         {
 
-            Product product = UnitOfWork.Products.Get(id);
+            var product = UnitOfWork.Products.Get(id);
             ViewBag.Categories = new SelectList(UnitOfWork.Categories.GetAll().Where(x => x.ParentCategory == null), "CategoryId", "Name");
             ViewBag.SubCategories = new SelectList(UnitOfWork.Categories.GetAll().Where(x => x.ParentCategory != null), "CategoryId", "Name");
             ViewBag.Producers = new SelectList(UnitOfWork.Categories.GetAll(), "ProducerId", "Name");

@@ -28,7 +28,7 @@ namespace Data
 
         public IEnumerable<Product> GetAll()
         {
-            return db.Products;
+            return db.Products.Include(x => x.Category).Include(x => x.Producer).Include(x => x.Subcategory);
         }
 
         public Product Get(Guid? id)
@@ -39,7 +39,7 @@ namespace Data
         public Product GetByUser(Guid? id)
         {
             User user = db.Users.Find(id);
-            Product prod = db.Products.Where(x => x.UserId == user.UserId).FirstOrDefault();
+            var prod = db.Products.Where(x => x.UserId == user.UserId).FirstOrDefault();
             var products = db.Products.Include(x => x.Category).Include(x => x.Producer).Include(x => x.Subcategory);
             return products.Where(x=>x.ProductId == prod.ProductId).FirstOrDefault();
         }
@@ -201,7 +201,7 @@ namespace Data
 
         public User Get(Guid? id)
         {
-            var users = db.Users.Include(x => x.UserData).ThenInclude(x=>x.City).Include(x=>x.UserData).ThenInclude(x=>x.Emails).Include(x=>x.UserData).ThenInclude(x=>x.Phones).Include(x => x.UserProductsList);
+            var users = db.Users.Include(x => x.UserData).ThenInclude(x=>x.City).Include(x=>x.UserData).ThenInclude(x=>x.Emails).Include(x=>x.UserData).ThenInclude(x=>x.Phones).Include(x => x.UserProductsList).Include(x=>x.Cart);
             return users.Where(x=>x.UserId == id).FirstOrDefault();
         }
         public User Get(string id)
@@ -211,7 +211,7 @@ namespace Data
             if (user == null) return null;
             else {
 
-                var users = db.Users.Include(x => x.UserData).ThenInclude(x => x.City).Include(x => x.UserData).ThenInclude(x => x.Emails).Include(x => x.UserData).ThenInclude(x => x.Phones).Include(x => x.UserProductsList);
+                var users = db.Users.Include(x => x.UserData).ThenInclude(x => x.City).Include(x => x.UserData).ThenInclude(x => x.Emails).Include(x => x.UserData).ThenInclude(x => x.Phones).Include(x => x.UserProductsList).Include(x => x.Cart);
                 return users.Where(x => x.UserId == user.UserId).FirstOrDefault();
             }
         }
@@ -436,14 +436,17 @@ namespace Data
 
         public ShoppingCart Get(Guid? id)
         {
-            return db.ShoppingCarts.Find(id);
+            var shop = db.ShoppingCarts.Include(x => x.Cartlines).ThenInclude(x=>x.Product);
+            return shop.Where(x=>x.ShoppingCartId == id).FirstOrDefault();
         }
         public ShoppingCart GetByUser(Guid? id)
         {
-            ShoppingCart shop = db.ShoppingCarts.Where(x => x.BuyerId == db.Users.Find(id).UserId).FirstOrDefault();
-            if(shop == null) { return null; }
-            else 
-            return db.ShoppingCarts.Find(shop.ShoppingCartId);
+            var shops = db.ShoppingCarts.Include(x => x.Cartlines).ThenInclude(x => x.Product);
+             if (shops == null) { return null; }
+            var shop = shops.Where(x => x.ShoppingCartId == db.Users.Find(id).Cart.ShoppingCartId).FirstOrDefault();
+            if (shop == null) { return null; }
+            else
+            return shops.Where(x => x.ShoppingCartId == db.Users.Find(id).Cart.ShoppingCartId).FirstOrDefault();
         }
 
         public void Create(ShoppingCart shoppingCart)

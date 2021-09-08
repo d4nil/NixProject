@@ -37,18 +37,18 @@ namespace User_Interface.Presentation.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            User us = UnitOfWork.Users.Get(user.Id);
-            ShoppingCart cart = UnitOfWork.ShoppingCarts.GetByUser(us.UserId);
-            ShoppingCartViewModel scvm = new ShoppingCartViewModel { lines = cart.Lines, TotalCostAllProducts = cart.TotalCostAllProducts };
+            var us = UnitOfWork.Users.Get(user.Id);
+            ShoppingCartViewModel scvm = new ShoppingCartViewModel { lines = us.Cart.Lines, TotalCostAllProducts = us.Cart.TotalCostAllProducts };
             return View(scvm);
         }
 
         [Authorize]
-        public async Task<IActionResult> AddToCart(Guid? pid, Guid BuyId)
+        public async Task<IActionResult> AddToCart(Guid? pid, Guid? BuyId)
         {
             Product product = UnitOfWork.Products.Get(pid);
-            if(UnitOfWork.ShoppingCarts.GetByUser(BuyId) != null) { 
-            ShoppingCart cart = UnitOfWork.ShoppingCarts.GetByUser(BuyId);
+            var user = UnitOfWork.Users.Get(BuyId);
+            if (user.Cart != null) { 
+            var cart = UnitOfWork.Users.Get(BuyId).Cart;
             cart.AddItem(product);
             cart.ComputeTotalCostAllProducts();
                 UnitOfWork.ShoppingCarts.Update(cart);
@@ -56,22 +56,23 @@ namespace User_Interface.Presentation.Controllers
             }
             else 
             {
-                ShoppingCart cart = new ShoppingCart { BuyerId = BuyId };
-                cart.AddItem(product);
-                cart.ComputeTotalCostAllProducts();
-                UnitOfWork.ShoppingCarts.Create(cart);
+                UnitOfWork.Users.Get(BuyId).Cart = new ShoppingCart {  Cartlines = new List<Cartline>()  };
+                UnitOfWork.Users.Get(BuyId).Cart.AddItem(product);
+                UnitOfWork.Users.Get(BuyId).Cart.ComputeTotalCostAllProducts();
+                UnitOfWork.ShoppingCarts.Create(UnitOfWork.Users.Get(BuyId).Cart);
+                user.Cart = UnitOfWork.Users.Get(BuyId).Cart;
+                UnitOfWork.Users.Update(user);
                 await UnitOfWork.Save();
             }
             return RedirectToAction("Products", "Home");
         }
 
         [Authorize]
-        public IActionResult RemoveFromCart(Guid id, Guid BuyerId)
+        public IActionResult RemoveFromCart(Guid id, Guid? BuyerId)
         {
             Product product = UnitOfWork.Products.Get(id);
-            ShoppingCart cart = UnitOfWork.ShoppingCarts.GetByUser(BuyerId);
-            cart.RemoveLine(product);
-            UnitOfWork.ShoppingCarts.Update(cart);
+            UnitOfWork.Users.Get(BuyerId).Cart.RemoveLine(product);
+            UnitOfWork.ShoppingCarts.Update(UnitOfWork.Users.Get(BuyerId).Cart);
             return RedirectToAction("Index");
         }
 

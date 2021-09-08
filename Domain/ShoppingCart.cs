@@ -9,22 +9,23 @@ namespace Domain.Core
     public class ShoppingCart
     {
         public Guid ShoppingCartId { get; set; }
-        public Guid BuyerId { get; set; }
         public decimal TotalCostAllProducts { get; set; }
         public List<Cartline> Cartlines { get; set; }
 
-        public Cartline AddItem(Product product)
+        public void AddItem(Product product)
         {
-            Cartline line = Cartlines.Where(x => x.Product.ProductId == product.ProductId).FirstOrDefault();
+            
+            var line = Cartlines.Where(x => x.Product.ProductId == product.ProductId).FirstOrDefault();
+            
             if ( line == null)
             {
                 line = new Cartline { Product = product, Quantity = 1, TotalCostProducts = product.Cost };
-                return line;
+                Cartlines.Add(line);
             }
             else
                 line.TotalCostProducts += product.Cost;
                 line.Quantity += 1;
-                return line;
+
 
 
         }

@@ -8,7 +8,6 @@ namespace Domain.Core
 {
     public class City
     {
-        public Guid UserDataId { get; set; }
         public Guid CityId { get; set; }
         public string city { get; set; }
     }

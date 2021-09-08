@@ -10,10 +10,9 @@ namespace Domain.Core
     {
         public string IdentityId { get; set; }
         public Guid UserId { get; set; }
-        public Guid UserDataId { get; set; }
         public UserData UserData { get; set; }
-        public Guid UserProductListId { get; set; }
         public UserProductsList UserProductsList { get; set; }
+        public ShoppingCart Cart { get; set; }
 
         public void AddProduct(Product product)
         {
