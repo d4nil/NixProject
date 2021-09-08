@@ -46,7 +46,7 @@ namespace User_Interface.Presentation.Controllers
         {
             var user = _userManager.GetUserId(HttpContext.User);
             if (UnitOfWork.Users.Get(user) == null) {
-                User newuser = new User { IdentityId = user, UserProductsList = new UserProductsList { Products = new List<Product>() } };
+                User newuser = new User { IdentityId = user, UserProductsList = new UserProductsList { Products = new List<Product>() }, Cart = new ShoppingCart { Cartlines = new List<Cartline>() } };
             UnitOfWork.Users.Create(newuser);
             List<Phone> phones = new List<Phone> { new Phone { phone = udvm.Phone } };
             List<Email> emails = new List<Email> { new Email { email = udvm.Email } };

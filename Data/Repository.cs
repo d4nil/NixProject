@@ -33,7 +33,7 @@ namespace Data
 
         public Product Get(Guid? id)
         {
-            var products = db.Products.Include(x => x.Category).Include(x => x.Producer).Include(x => x.Subcategory);
+            var products = db.Products.Include(x => x.Category).Include(x => x.Producer).Include(x => x.Subcategory).ThenInclude(x=>x.ParentCategory);
             return products.Where(x => x.ProductId == id).FirstOrDefault();
         }
         public Product GetByUser(Guid? id)
@@ -201,7 +201,7 @@ namespace Data
 
         public User Get(Guid? id)
         {
-            var users = db.Users.Include(x => x.UserData).ThenInclude(x=>x.City).Include(x=>x.UserData).ThenInclude(x=>x.Emails).Include(x=>x.UserData).ThenInclude(x=>x.Phones).Include(x => x.UserProductsList).Include(x=>x.Cart);
+            var users = db.Users.Include(x => x.UserData).ThenInclude(x=>x.City).Include(x=>x.UserData).ThenInclude(x=>x.Emails).Include(x=>x.UserData).ThenInclude(x=>x.Phones).Include(x => x.UserProductsList).Include(x=>x.Cart).ThenInclude(x=>x.Cartlines).ThenInclude(x=>x.Product);
             return users.Where(x=>x.UserId == id).FirstOrDefault();
         }
         public User Get(string id)
@@ -211,7 +211,7 @@ namespace Data
             if (user == null) return null;
             else {
 
-                var users = db.Users.Include(x => x.UserData).ThenInclude(x => x.City).Include(x => x.UserData).ThenInclude(x => x.Emails).Include(x => x.UserData).ThenInclude(x => x.Phones).Include(x => x.UserProductsList).Include(x => x.Cart);
+                var users = db.Users.Include(x => x.UserData).ThenInclude(x => x.City).Include(x => x.UserData).ThenInclude(x => x.Emails).Include(x => x.UserData).ThenInclude(x => x.Phones).Include(x => x.UserProductsList).Include(x => x.Cart).ThenInclude(x => x.Cartlines).ThenInclude(x => x.Product);
                 return users.Where(x => x.UserId == user.UserId).FirstOrDefault();
             }
         }
@@ -431,7 +431,7 @@ namespace Data
 
         public IEnumerable<ShoppingCart> GetAll()
         {
-            return db.ShoppingCarts;
+            return db.ShoppingCarts.Include(x => x.Cartlines).ThenInclude(x => x.Product);
         }
 
         public ShoppingCart Get(Guid? id)

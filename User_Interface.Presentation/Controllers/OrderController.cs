@@ -50,13 +50,13 @@ namespace User_Interface.Presentation.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateOrder(Guid? shopid, Guid? buy)
+        public IActionResult CreateOrder(Guid? buy)
         {
-            if (shopid == null) return RedirectToAction("Products", "Home");
+            if (UnitOfWork.Users.Get(buy).Cart == null) return RedirectToAction("Products", "Home");
             else
             {
-                ShoppingCart cart = UnitOfWork.ShoppingCarts.Get(shopid);
                 User buyer = UnitOfWork.Users.Get(buy);
+                var cart = buyer.Cart;
                 OrderViewModel ovm = new OrderViewModel { cart = cart, Date = DateTime.Now, User = buyer };
                 return View(ovm);
             }
@@ -67,6 +67,9 @@ namespace User_Interface.Presentation.Controllers
         {
             Order order = new Order { Name = ovm.Name, City = ovm.City, Address = ovm.Address, Comment = ovm.Comment, Date = ovm.Date, lines = (List<Cartline>)ovm.cart.Lines, UserId = ovm.User.UserId };
             UnitOfWork.ShoppingCarts.Delete(ovm.cart.ShoppingCartId);
+            var user = UnitOfWork.Users.GetAll().Where(x => x.Cart.ShoppingCartId == ovm.cart.ShoppingCartId).FirstOrDefault();
+            user.Cart = new ShoppingCart { Cartlines = new List<Cartline>() };
+            UnitOfWork.Users.Update(user);
             UnitOfWork.Orders.Create(order);
             await UnitOfWork.Save();
             return View("Index");

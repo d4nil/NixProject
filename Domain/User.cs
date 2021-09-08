@@ -13,7 +13,6 @@ namespace Domain.Core
         public UserData UserData { get; set; }
         public UserProductsList UserProductsList { get; set; }
         public ShoppingCart Cart { get; set; }
-
         public void AddProduct(Product product)
         {
 

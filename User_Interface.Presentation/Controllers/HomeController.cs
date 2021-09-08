@@ -38,10 +38,13 @@ namespace User_Interface.Presentation.Controllers
             var user =  _userManager.GetUserId(HttpContext.User);
             if(UnitOfWork.Users.Get(user) == null)
             {
-                User newuser = new User { IdentityId = user, UserProductsList = new UserProductsList { Products = new List<Product>() }, Cart = new ShoppingCart { Cartlines = new List<Cartline>() } };
+                ShoppingCart cart = new ShoppingCart { Cartlines = new List<Cartline>() } ;
+                UnitOfWork.ShoppingCarts.Create(cart);
+                User newuser = new User { IdentityId = user, UserProductsList = new UserProductsList { Products = new List<Product>() }, Cart = cart };
                 UnitOfWork.Users.Create(newuser);
                 await UnitOfWork.Save();
-                
+
+
             }
             
             List<Category> categories = UnitOfWork.Categories.GetAll().ToList();
@@ -54,7 +57,8 @@ namespace User_Interface.Presentation.Controllers
             {
                 products = products.Where(p => p.PName.Contains(name));
             }
-            
+
+            productsView.BuyerId = UnitOfWork.Users.Get(user).UserId;
             categories.Insert(0, new Category { Name = "Все"});
             ViewBag.Categories = new SelectList(categories, "CategoryId", "Name");
             int pageSize = 8;
@@ -93,9 +97,8 @@ namespace User_Interface.Presentation.Controllers
         public IActionResult Index()
         {
             var user = _userManager.GetUserId(HttpContext.User);
-            
-                UserDataViewModel udvm = new UserDataViewModel { Name = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).Name, City = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).City, Emails = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).Emails, Phones = UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId).Phones };
-                return View(UnitOfWork.UserDataList.GetByUser(UnitOfWork.Users.Get(user).UserId));
+            var us = UnitOfWork.Users.Get(user);
+                return View("Index", us);
         }
 
         public IActionResult Privacy()

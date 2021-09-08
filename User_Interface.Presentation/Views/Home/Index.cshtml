@@ -1,4 +1,4 @@
-﻿@model Domain.Core.UserData
+﻿@model Domain.Core.User
 @{
     ViewData["Title"] = "";
 }
@@ -20,10 +20,7 @@
             <td>Родительская Категория</td>
         </tr>
         <tr>
-            <td>@Model.City</td>
-            <td>@Model.Emails</td>
-            <td>@Model.Name</td>
-            <td>@Model.Phones</td>
+            <td>@Model.Cart.ShoppingCartId</td>
         </tr>
 
     </table>

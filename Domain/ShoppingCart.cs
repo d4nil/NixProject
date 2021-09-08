@@ -15,11 +15,11 @@ namespace Domain.Core
         public void AddItem(Product product)
         {
             
-            var line = Cartlines.Where(x => x.Product.ProductId == product.ProductId).FirstOrDefault();
+            Cartline line = Cartlines.Where(x => x.Product.ProductId == product.ProductId).FirstOrDefault();
             
             if ( line == null)
             {
-                line = new Cartline { Product = product, Quantity = 1, TotalCostProducts = product.Cost };
+                line = new Cartline { Product = product, TotalCostProducts = product.Cost };
                 Cartlines.Add(line);
             }
             else
@@ -30,8 +30,12 @@ namespace Domain.Core
 
         }
         public void RemoveLine(Product product)
-        {
+        {   
+            Cartline line = Cartlines.Where(x => x.Product.ProductId == product.ProductId).FirstOrDefault();
+            TotalCostAllProducts -= line.TotalCostProducts;
             Cartlines.RemoveAll(l => l.Product.ProductId == product.ProductId);
+
+            
         }
         public IEnumerable<Cartline> Lines
         {

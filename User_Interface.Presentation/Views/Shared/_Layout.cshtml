@@ -44,11 +44,11 @@
                             <a class="nav-link" asp-action="Login" asp-controller="Account">Авторизация</a>
                         </li>
                     </ul>
-                    <a asp-action="Index" asp-controller="Admin">Управление пользователями   </a>
-                    <a asp-action="Index" asp-controller="Roles">Управление ролями    </a>
-                    <a asp-action="Index" asp-controller="ShoppingCart"><img src="~/3.png" />     </a>
-                    <a asp-action="MyAccount" asp-controller="Profile"><img src="~/1.png" />     </a>
-                    <form class="form-inline my-2 my-lg-0" method="post" asp-controller="Account" asp-action="Logout">
+                    <a asp-action="Index" asp-controller="Admin" style="margin:5px">Пользователи   </a>
+                    <a asp-action="Index" asp-controller="Roles" style="margin:5px">Роли    </a>
+                    <a asp-action="Index" asp-controller="ShoppingCart" style="margin:5px"><img src="~/3.png" />     </a>
+                    <a asp-action="MyAccount" asp-controller="Profile" style="margin:5px"><img src="~/1.png" />     </a>
+                    <form class="form-inline my-2 my-lg-0" method="post" asp-controller="Account" asp-action="Logout" style="margin:5px">
                         <input type="submit" value="Выход" />
                     </form>
                 </div>
@@ -63,7 +63,7 @@
 
         <footer class="border-top footer text-muted mt-3">
             <div class="container">
-                &copy; 2021 - MarketPlace - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                &copy; 2021 - MarketPlace - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
             </div>
         </footer>
         <script src="~/lib/jquery/dist/jquery.min.js"></script>

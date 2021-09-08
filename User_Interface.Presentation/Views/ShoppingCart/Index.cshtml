@@ -12,18 +12,18 @@
             <th>Товар</th>
             <th class="text-right">Цена</th>
             <th class="text-right">Общая цена</th>
-            <th></th>
+            <th>  </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var line in Model.lines)
         {
             <tr>
-                <td class="text-center">@line.Quantity</td>
+                <td class="text-left">@line.Quantity</td>
                 <td class="text-left">@line.Product.PName</td>
                 <td class="text-right">@line.Product.Cost.ToString("# грн")</td>
                 <td class="text-right">@line.TotalCostProducts.ToString("#  грн")</td>
-                <td class="text-right"><a asp-action="RemoveFromCart" asp-route-id="@line.Product.ProductId">Удалить</a></td>
+                <td class="text-right"><a asp-action="RemoveFromCart" asp-route-id="@line.Product.ProductId" asp-route-BuyerId="@ViewBag.BuyerId" class="btn btn-warning">Удалить</a></td>
 
             </tr>
         }
@@ -38,11 +38,12 @@
     </tfoot>
     </table>
     <div class="text-center">
-        <a class="btn btn-primary" asp-action="Products" asp-controller="Home">Продолжить покупки</a>
+        <a style="margin:30px" class="btn btn-secondary" asp-action="Products" asp-controller="Home">Продолжить покупки</a>
     </div>
+    
     <div class="text-center">
-        <a class="btn btn-primary" asp-action="CreateOrder" asp-controller="Order">Оформление заказа</a>
+        <a  class="btn btn-primary" asp-action="CreateOrder" asp-controller="Order" asp-route-buy="@ViewBag.BuyerId">Оформление заказа</a>
     </div>
 
 
-    }
+    
