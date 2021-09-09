@@ -56,32 +56,24 @@
     <div class="col">
         @foreach (var c in o.lines)
         {
-            <div>
                 @c.Product.PName
-            </div>
         }
     </div>
     <div class="col">
         @foreach (var c in o.lines)
         {
-            <div>
                 @c.Quantity
-            </div>
         }
     </div>
         <div class="col">
-            <form asp-action="Index" asp-controller="Order" asp-route-id="@o.OrderId">
-                <div>
-                    <input type="submit" class="btn btn-success" value="Просмотр заказа" />
-                </div>
-            </form>
+            <a asp-action="Index" asp-controller="Order" asp-route-id="@o.OrderId" style="font-size:small"  class="btn btn-success">
+                Просмотр Заказа
+            </a>
         </div>
         <div class="col">
-            <form asp-action="Edit" asp-controller="Order" asp-route-id="@o.OrderId">
-                <div>
-                    <input type="submit" class="btn btn-success" value="Изменить" />
-                </div>
-            </form>
+            <a asp-action="Edit" asp-controller="Order" asp-route-id="@o.OrderId" style="font-size:small" class="btn btn-success">
+                Изменить 
+            </a>
         </div>
     </div>
 }

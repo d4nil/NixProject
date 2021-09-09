@@ -91,18 +91,19 @@ namespace User_Interface.Presentation.Controllers
             ViewBag.SubCategories = new SelectList(UnitOfWork.Categories.GetAll().Where(x => x.ParentCategory != null), "CategoryId", "Name");
             ViewBag.Producers = new SelectList(UnitOfWork.Categories.GetAll(), "ProducerId", "Name");
             ProductViewModel pvm = new ProductViewModel ();
-            ViewBag.SelId = product.UserId;
+            pvm.BuyerId = product.UserId;
             return View(pvm);
         }
 
         [HttpPost]
         public async Task<IActionResult> EditProduct(ProductViewModel pvm)
         {
-            Product prod = UnitOfWork.Products.GetByUser(pvm.BuyerId);
-            prod.Category = pvm.Category;
+            var prod = UnitOfWork.Products.GetByUser(pvm.BuyerId);
+            prod.Category = UnitOfWork.Categories.Get(pvm.Category.CategoryId);
             prod.ProductDescription = pvm.ProductDescription;
-            prod.Producer = pvm.Producer;
+            prod.Producer = UnitOfWork.Producers.Get(pvm.Producer.ProducerId);
             prod.Cost = pvm.Cost;
+            prod.Subcategory = UnitOfWork.Categories.Get(pvm.SubCategory.CategoryId);
             prod.PName = pvm.PName;
             prod.Condition = prod.Condition;
             UnitOfWork.Products.Update(prod);

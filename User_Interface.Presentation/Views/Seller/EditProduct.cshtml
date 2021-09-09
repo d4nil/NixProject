@@ -8,7 +8,8 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditProduct" asp-route-id="@ViewBag.SelId">
+        <form asp-action="EditProduct">
+            <input type="hidden" asp-for="BuyerId" value="@Model.BuyerId"/>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="PName" class="control-label"></label>
