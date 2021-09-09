@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Core
 {
@@ -11,6 +12,7 @@ namespace Domain.Core
     {
         public Guid UserDataId { get; set; }
         public Guid UserId { get; set; }
+        [Required]
         public string Name { get; set; }
         public List<Phone> Phones { get; set; }
         public List<Email> Emails { get; set; }

@@ -19,7 +19,6 @@ namespace User_Interface.Presentation.Controllers
     [Authorize(Roles = "user")]
     public class ShoppingCartController : Controller
     {
-        Context db;
         UnitOfWork UnitOfWork;
         private readonly UserManager<IdentityUser> _userManager;
 
